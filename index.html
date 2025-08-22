@@ -1,11 +1,329 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>My First CI Website</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indian Stock Finder</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); /* Deep Blue Gradient */
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            width: 100%;
+            transition: padding 0.3s;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            color: #d4af37; /* Gold for premium look */
+        }
+        header.category-selected {
+            padding: 10px 20px;
+        }
+        header.category-selected h1 {
+            font-size: 2em;
+        }
+        .home-content {
+            text-align: center;
+            margin: 50px 0;
+            padding: 20px;
+        }
+        .home-content h2 {
+            color: #2ecc71; /* Emerald Green */
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+        .home-content p {
+            font-size: 1.2em;
+            color: #d4af37;
+        }
+        .dropdown-container {
+            margin: 30px 0;
+            position: relative;
+            width: 250px;
+            display: block;
+        }
+        .dropdown-btn {
+            padding: 15px 20px;
+            background: linear-gradient(135deg, #d4af37 0%, #ffd700 100%); /* Gold Gradient */
+            color: #1e3c72; /* Deep Blue */
+            border: none;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            width: 100%;
+            text-align: center;
+            transition: background 0.3s, box-shadow 0.3s;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            clip-path: polygon(10% 0%, 90% 0%, 100% 100%, 0% 100%); /* Trapezoid shape */
+            position: relative;
+            overflow: hidden;
+        }
+        .dropdown-btn:hover {
+            background: #ffd700; /* Brighter Gold */
+            box-shadow: 0 6px 15px rgba(212, 175, 55, 0.5);
+        }
+        .dropdown-btn::after {
+            content: '\f078';
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            margin-left: 10px;
+            transition: transform 0.3s;
+        }
+        .dropdown.active .dropdown-btn::after {
+            transform: rotate(180deg);
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            overflow: hidden;
+            margin-top: 10px;
+            width: 100%;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            z-index: 1;
+            clip-path: polygon(10% 0%, 90% 0%, 100% 100%, 0% 100%); /* Matching trapezoid shape */
+        }
+        .dropdown.active .dropdown-content {
+            display: block;
+        }
+        .dropdown-content a {
+            color: #d4af37;
+            padding: 12px 20px;
+            text-decoration: none;
+            display: block;
+            text-align: center;
+            transition: background 0.3s;
+        }
+        .dropdown-content a:hover {
+            background: #ffd700;
+            color: #1e3c72;
+        }
+        .main-content {
+            width: 100%;
+            max-width: 1200px;
+            padding: 20px;
+            flex-grow: 1;
+        }
+        .container {
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            display: none;
+        }
+        .container.active {
+            display: block;
+        }
+        h2 {
+            color: #2ecc71; /* Emerald Green */
+            text-align: center;
+            border-bottom: 3px solid #2ecc71;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .stock-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+        .stock-box {
+            background: linear-gradient(135deg, #3498db 0%, #2ecc71 100%); /* Blue to Emerald Green */
+            padding: 20px;
+            border-radius: 15px;
+            width: 300px;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+            text-align: center;
+            animation: fadeIn 0.5s ease-in;
+        }
+        .stock-box h3 {
+            color: #d4af37; /* Gold */
+            margin: 0 0 15px;
+            font-size: 1.5em;
+        }
+        .stock-box p {
+            margin: 8px 0;
+            font-size: 1.1em;
+        }
+        .stock-box i {
+            color: #ffd700; /* Brighter Gold */
+            margin-right: 8px;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        footer {
+            background: #1e3c72;
+            color: #fff;
+            text-align: center;
+            padding: 15px;
+            margin-top: auto;
+            width: 100%;
+            font-size: 0.9em;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
 </head>
 <body>
-  <h1>Hello, Jenkins CI is working!</h1>
-  <p>Build triggered from GitHub Webhook.</p>
-  <h1>THE END</h1>
+    <header id="main-header">
+        <h1>Indian Stock Finder</h1>
+    </header>
+    <div class="home-content" id="home-content">
+        <h2>Welcome to Stock Finder</h2>
+        <p>Explore the best investment opportunities in the Indian market. Select a category to begin.</p>
+    </div>
+    <div class="dropdown-container" id="dropdown-container">
+        <div class="dropdown">
+            <button class="dropdown-btn" onclick="toggleDropdown()">Select Category</button>
+            <div class="dropdown-content">
+                <a href="#" onclick="showSection('intraday', event)">Intraday</a>
+                <a href="#" onclick="showSection('swing', event)">Swing</a>
+                <a href="#" onclick="showSection('longterm', event)">Long-Term</a>
+            </div>
+        </div>
+    </div>
+    <div class="main-content">
+        <div class="container" id="intraday">
+            <h2>Intraday Trading</h2>
+            <p style="text-align:center;">Focus on high volatility stocks for same-day trades in NSE/BSE.</p>
+            <div class="stock-list" id="intraday-stocks"></div>
+        </div>
+        <div class="container" id="swing">
+            <h2>Swing Trading</h2>
+            <p style="text-align:center;">Capture medium-term gains over days to weeks in NSE/BSE.</p>
+            <div class="stock-list" id="swing-stocks"></div>
+        </div>
+        <div class="container" id="longterm">
+            <h2>Long-Term Investment</h2>
+            <p style="text-align:center;">Hold strong fundamental stocks for years in NSE/BSE.</p>
+            <div class="stock-list" id="longterm-stocks"></div>
+        </div>
+    </div>
+    <footer>
+        <p>&copy; 2025 Indian Stock Finder. Replace 'demo' with your Alpha Vantage API key for real data (alphavantage.co). Demo only.</p>
+    </footer>
+    <script>
+        let dropdownOpen = false;
+        let categorySelected = false;
+
+        function toggleDropdown() {
+            if (!categorySelected) {
+                dropdownOpen = !dropdownOpen;
+                document.querySelector('.dropdown').classList.toggle('active');
+            }
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            const dropdown = document.querySelector('.dropdown');
+            if (!dropdown.contains(event.target) && !categorySelected) {
+                dropdown.classList.remove('active');
+                dropdownOpen = false;
+            }
+        });
+
+        async function fetchStockData(symbol) {
+            const apiKey = 'demo';
+            const apiUrl = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${symbol}&apikey=${apiKey}`;
+            try {
+                const response = await fetch(apiUrl);
+                const data = await response.json();
+                const quote = data['Global Quote'];
+                if (!quote || !quote['05. price']) throw new Error('Invalid data');
+                const price = parseFloat(quote['05. price']);
+                return {
+                    current: price.toFixed(2),
+                    entry: price.toFixed(2),
+                    target: (price * 1.015).toFixed(2),
+                    stopLoss: (price * 0.995).toFixed(2)
+                };
+            } catch (error) {
+                console.error(`Error fetching ${symbol}:`, error);
+                return { current: 'N/A', entry: 'N/A', target: 'N/A', stopLoss: 'N/A' };
+            }
+        }
+
+        async function displayStocks(type) {
+            const stockLists = {
+                intraday: [
+                    { symbol: 'RELIANCE.NS' },
+                    { symbol: 'TCS.NS' },
+                    { symbol: 'HDFCBANK.NS' }
+                ],
+                swing: [
+                    { symbol: 'INFY.NS' },
+                    { symbol: 'ICICIBANK.NS' },
+                    { symbol: 'KOTAKBANK.NS' }
+                ],
+                longterm: [
+                    { symbol: 'HINDUNILVR.NS' },
+                    { symbol: 'ITC.NS' },
+                    { symbol: 'ASIANPAINT.NS' }
+                ]
+            };
+            const stockList = document.getElementById(`${type}-stocks`);
+            stockList.innerHTML = ''; // Clear previous content
+            for (const stock of stockLists[type]) {
+                const data = await fetchStockData(stock.symbol);
+                const stockBox = document.createElement('div');
+                stockBox.className = 'stock-box';
+                stockBox.innerHTML = `
+                    <h3><i class="fas fa-chart-line"></i> ${stock.symbol}</h3>
+                    <p><i class="fas fa-rupee-sign"></i> Current: ₹${data.current}</p>
+                    <p><i class="fas fa-arrow-right"></i> Entry: ₹${data.entry}</p>
+                    <p><i class="fas fa-bullseye"></i> Target: ₹${data.target}</p>
+                    <p><i class="fas fa-shield-alt"></i> Stop Loss: ₹${data.stopLoss}</p>
+                `;
+                stockList.appendChild(stockBox);
+            }
+        }
+
+        function showSection(type, event) {
+            if (event) event.preventDefault();
+            document.querySelectorAll('.container').forEach(container => container.classList.remove('active'));
+            document.getElementById(type).classList.add('active');
+            displayStocks(type);
+            categorySelected = true;
+            document.getElementById('main-header').classList.add('category-selected');
+            document.getElementById('home-content').classList.add('hidden');
+            document.getElementById('dropdown-container').classList.add('hidden');
+            const categoryNames = {
+                intraday: 'Intraday Trading',
+                swing: 'Swing Trading',
+                longterm: 'Long-Term Investment'
+            };
+            document.querySelector('header h1').textContent = `Indian Stock Finder - ${categoryNames[type]}`;
+            if (dropdownOpen) {
+                toggleDropdown();
+            }
+        }
+
+        // No default category loaded
+        window.onload = () => {
+            document.querySelectorAll('.container').forEach(container => container.classList.remove('active'));
+        };
+    </script>
 </body>
 </html>
